@@ -112,6 +112,31 @@ def load_authorisation(file_name):
 	with open(file_name, 'r') as auth_file:
 		return json.load(auth_file)
 
+'''
+  import lists and tasks from Google Keep exports
+'''
+def keep_import():
+	print 'Enter list name followed by tasks in keep format'
+	list_and_tasks = []
+	while True:
+		last_input = raw_input()
+		if not last_input:
+			break
+		list_and_tasks.append(last_input)
+	ticked = '[x] '
+	unticked = '[ ] '
+
+	list_name = list_and_tasks[0]
+	list_id = create_list(list_name)
+
+	print 'Adding tasks to list: %s (%s)' % (list_name, list_id, )
+	for task in list_and_tasks[1:]:
+		if task[0:4] == ticked:
+			add_task_to_list(list_id, task[4:], True)
+		elif task[0:4] == unticked:
+			add_task_to_list(list_id, task[4:])
+		else:
+			print '>%s< is not in Keep format' % task
 
 if __name__ == '__main__':
 	import os.path
@@ -125,6 +150,12 @@ if __name__ == '__main__':
 
 	header_dict['X-Access-Token'] = auth_data_dict['access_token']
 	header_dict['X-Client-ID'] = auth_data_dict['client_id']
+
+	# TODO: Add command line arguments
+	IMPORT_KEEP = False
+	if IMPORT_KEEP:
+		while True:
+			keep_import()
 
 	list_name = raw_input('Enter name for list\n')
 	error_code, list_id = find_list(list_name)
