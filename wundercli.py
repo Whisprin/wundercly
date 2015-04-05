@@ -83,11 +83,12 @@ def create_list(list_name):
   add task to list_id
   return new task id
 '''
-def add_task_to_list(list_id, task_title):
+def add_task_to_list(list_id, task_title, completed=False):
 	task_create_url = "https://a.wunderlist.com/api/v1/tasks"
 	task_create_json = {
 		'list_id': list_id,
-		'title': task_title
+		'title': task_title,
+		'completed': completed
 	}
 	task_create_data = requests.post(task_create_url, headers=header_dict, json=task_create_json)
 
@@ -110,6 +111,7 @@ def save_authorisation(file_name, auth_data_dict):
 def load_authorisation(file_name):
 	with open(file_name, 'r') as auth_file:
 		return json.load(auth_file)
+
 
 if __name__ == '__main__':
 	import os.path
@@ -141,4 +143,7 @@ if __name__ == '__main__':
 
 	print 'Adding tasks to list: %s (%s)' % (list_name, list_id, )
 	for task in task_list:
-		add_task_to_list(list_id, task)
+		if task[0] == ' ':
+			add_task_to_list(list_id, task[1:], True)
+		else:
+			add_task_to_list(list_id, task)
