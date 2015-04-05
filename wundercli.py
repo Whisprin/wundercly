@@ -57,7 +57,7 @@ def find_list(list_name):
 		list_name = 'inbox'
 
 	for user_list in json.loads(list_info_data.text):
-		if list_name == user_list['title']:
+		if list_name == user_list['title'].encode("utf-8", "replace"):
 			print 'Found List: %s' % list_name
 			return 0, user_list['id']
 
